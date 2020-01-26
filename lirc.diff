@@ -1,0 +1,45 @@
+diff --git a/drivers/media/rc/gpio-ir-tx.c b/drivers/media/rc/gpio-ir-tx.c
+index cd476cab9..270e2c422 100644
+--- a/drivers/media/rc/gpio-ir-tx.c
++++ b/drivers/media/rc/gpio-ir-tx.c
+@@ -68,9 +68,10 @@ static int gpio_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
+ 	 * delta should never exceed 0.5 seconds (IR_MAX_DURATION) and on
+ 	 * m68k ndelay(s64) does not compile; so use s32 rather than s64.
+ 	 */
+-	s32 delta;
++	//s32 delta;
++	s64 delta;
+ 	int i;
+-	unsigned int pulse, space;
++	u64 pulse, space;
+ 
+ 	/* Ensure the dividend fits into 32 bit */
+ 	pulse = DIV_ROUND_CLOSEST(gpio_ir->duty_cycle * (NSEC_PER_SEC / 100),
+diff --git a/drivers/media/rc/lirc_dev.c b/drivers/media/rc/lirc_dev.c
+index f862f1b7f..f4b6750d4 100644
+--- a/drivers/media/rc/lirc_dev.c
++++ b/drivers/media/rc/lirc_dev.c
+@@ -29,7 +29,7 @@
+ #include "rc-core-priv.h"
+ #include <uapi/linux/lirc.h>
+ 
+-#define LIRCBUF_SIZE	256
++#define LIRCBUF_SIZE	2048
+ 
+ static dev_t lirc_base_dev;
+ 
+@@ -340,10 +340,10 @@ static ssize_t ir_lirc_transmit_ir(struct file *file, const char __user *buf,
+ 	}
+ 
+ 	for (i = 0; i < count; i++) {
+-		if (txbuf[i] > IR_MAX_DURATION / 1000 - duration || !txbuf[i]) {
+-			ret = -EINVAL;
+-			goto out_kfree;
+-		}
++		//if (txbuf[i] > IR_MAX_DURATION / 1000 - duration || !txbuf[i]) {
++		//ret = -EINVAL;
++		//goto out_kfree;
++		//}
+ 
+ 		duration += txbuf[i];
+ 	}
